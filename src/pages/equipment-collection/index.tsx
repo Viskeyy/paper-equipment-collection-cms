@@ -1,7 +1,8 @@
 import { postJson } from '@/utils/fetcher';
+import { transformToUTCString } from '@/utils/timer';
 import { useNavigate } from '@tanstack/react-router';
 import { Button, Card, Col, DatePicker, Form, Input, Row, message } from 'antd';
-import dayjs, { type Dayjs } from 'dayjs';
+import { type Dayjs } from 'dayjs';
 import { useSWRConfig } from 'swr';
 import useSWRMutation from 'swr/mutation';
 
@@ -51,14 +52,12 @@ export const EquipmentCollectionPage = () => {
 
         const bodyData: CreateEquipmentPayload = {
             ...rest,
-            collection_time: dayjs(collection_time).format('YYYY-MM-DD'),
+            collection_time: transformToUTCString(collection_time),
             inspection_data: JSON.stringify(inspection_data),
         };
 
         try {
             const result = await trigger(bodyData);
-
-            console.log(result, 'request result');
 
             await mutate((key) => Array.isArray(key) && key[0] === '/api/v1/equipment', undefined, {
                 revalidate: true,
@@ -126,7 +125,7 @@ export const EquipmentCollectionPage = () => {
                             name="collection_time"
                             rules={[{ required: true, message: '请选择采集时间' }]}
                         >
-                            <DatePicker className="w-full" />
+                            <DatePicker className="w-full" showTime />
                         </Form.Item>
                     </Col>
 

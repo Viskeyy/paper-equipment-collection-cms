@@ -1,3 +1,4 @@
+import { transformToUTCDay } from '@/utils/timer';
 import { useNavigate } from '@tanstack/react-router';
 import { Button, Col, DatePicker, Form, Input, Row, Table, Card } from 'antd';
 import dayjs from 'dayjs';
@@ -109,8 +110,9 @@ export const EquipmentTablePage = () => {
                                 ...prev,
                                 ...value,
                                 page: 1,
-                                collection_time:
-                                    value.collection_time ?? dayjs(value.collection_time).format('YYYY-MM-DD'),
+                                collection_time: value.collection_time
+                                    ? transformToUTCDay(value.collection_time)
+                                    : undefined,
                             }))
                         }
                         onReset={() => setQueryParams({ page: 1, pageSize: 10 })}
