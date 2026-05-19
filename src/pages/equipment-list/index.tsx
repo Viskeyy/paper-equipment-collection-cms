@@ -93,7 +93,7 @@ export const EquipmentTablePage = () => {
                 }
             },
         },
-        { title: '操作' },
+        // { title: '操作' },
     ];
 
     const tableData = data?.data.items ?? [];
