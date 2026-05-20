@@ -1,6 +1,7 @@
-import { EquipmentTablePage } from '@/pages/equipment-list';
-import { createFileRoute } from '@tanstack/react-router';
+import { createFileRoute, redirect } from '@tanstack/react-router';
 
 export const Route = createFileRoute('/')({
-    component: EquipmentTablePage,
+    beforeLoad: () => {
+        throw redirect({ to: '/equipment' });
+    },
 });

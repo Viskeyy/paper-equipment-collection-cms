@@ -19,7 +19,7 @@ export const EquipmentFeeCreate = () => {
         try {
             const res = await trigger(value);
             if (res.code !== 200001) {
-                throw new Error(res.messages || '保存失败，请稍后重试');
+                throw new Error(res.message || '保存失败，请稍后重试');
             }
             message.success('保存成功');
             navigate({ to: '/equipment-fee' });
@@ -62,7 +62,7 @@ export const EquipmentFeeCreate = () => {
                         <Button type="primary" htmlType="submit" loading={isMutating}>
                             保存
                         </Button>
-                        <Button className="ml-4" onClick={() => navigate({ to: '/' })}>
+                        <Button className="ml-4" onClick={() => navigate({ to: '/equipment-fee' })}>
                             取消
                         </Button>
                     </Col>

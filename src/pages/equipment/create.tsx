@@ -1,69 +1,33 @@
-import { postJson } from '@/utils/fetcher';
+import type { EquipmentTableItem, EquipmentFormItem, EquipmentCreateItem } from './constant';
+import { postJson, type ApiResponse } from '@/utils/fetcher';
 import { transformToUTCString } from '@/utils/timer';
 import { useNavigate } from '@tanstack/react-router';
 import { Button, Card, Col, DatePicker, Form, Input, Row, message } from 'antd';
-import { type Dayjs } from 'dayjs';
-import { useSWRConfig } from 'swr';
 import useSWRMutation from 'swr/mutation';
 
-interface InspectionDataItem {
-    inspection_name: string;
-    inspection_unit: string;
-    inspection_value: string;
-}
-
-interface EquipmentCollectionItem {
-    device_name: string;
-    device_model: string;
-    device_id: string;
-    sample_number: string;
-    inspection_item: string;
-    collection_time: Dayjs;
-    inspection_data: InspectionDataItem[] | undefined;
-}
-
-interface CreateEquipmentPayload {
-    device_name: string;
-    device_model: string;
-    device_id: string;
-    sample_number: string;
-    inspection_item: string;
-    collection_time: string;
-    inspection_data: string;
-}
-
-interface CreateEquipmentResponse {
-    status: string;
-    code: number;
-    message: string;
-    data?: unknown;
-}
-
-export const EquipmentCollectionPage = () => {
+export const EquipmentFormPage = () => {
     const navigate = useNavigate();
-    const { mutate } = useSWRConfig();
-    const { trigger, isMutating } = useSWRMutation<CreateEquipmentResponse, Error, string, CreateEquipmentPayload>(
+
+    const { trigger, isMutating } = useSWRMutation<ApiResponse<EquipmentTableItem>, Error, string, EquipmentCreateItem>(
         '/api/v1/equipment',
         postJson,
     );
 
-    const submit = async (value: EquipmentCollectionItem) => {
+    const submit = async (value: EquipmentFormItem) => {
         const { collection_time, inspection_data, ...rest } = value;
 
-        const bodyData: CreateEquipmentPayload = {
+        const bodyData: EquipmentCreateItem = {
             ...rest,
             collection_time: transformToUTCString(collection_time),
             inspection_data: JSON.stringify(inspection_data),
         };
 
         try {
-            const result = await trigger(bodyData);
-
-            await mutate((key) => Array.isArray(key) && key[0] === '/api/v1/equipment', undefined, {
-                revalidate: true,
-            });
-
-            message.success(result.message || '保存成功');
+            const res = await trigger(bodyData);
+            if (res.code !== 200001) {
+                throw new Error(res.message || '保存失败，请稍后重试');
+            }
+            message.success('保存成功');
             navigate({ to: '/' });
         } catch (error) {
             message.error(error instanceof Error ? error.message : '保存失败，请稍后重试');
@@ -170,7 +134,7 @@ export const EquipmentCollectionPage = () => {
                         <Button type="primary" htmlType="submit" loading={isMutating}>
                             保存
                         </Button>
-                        <Button className="ml-4" onClick={() => navigate({ to: '/' })}>
+                        <Button className="ml-4" onClick={() => navigate({ to: '/equipment' })}>
                             取消
                         </Button>
                     </Col>

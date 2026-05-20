@@ -62,7 +62,7 @@ export const EquipmentSanitaryNapkinCreate = () => {
             const res = await trigger(bodyData);
 
             if (res.code !== 200001) {
-                message.error(res.messages ?? '保存失败，请稍后重试');
+                message.error(res.message ?? '保存失败，请稍后重试');
                 return;
             }
 

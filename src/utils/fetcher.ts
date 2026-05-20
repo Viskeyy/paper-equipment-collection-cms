@@ -82,5 +82,5 @@ export type ApiResponse<T> = {
     status: string;
     code: number;
     data: T;
-    messages?: string;
+    message?: string;
 };

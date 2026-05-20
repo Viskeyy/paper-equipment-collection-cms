@@ -11,9 +11,11 @@
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as SanitaryNapkinIndexRouteImport } from './routes/sanitary-napkin/index'
+import { Route as EquipmentIndexRouteImport } from './routes/equipment/index'
 import { Route as EquipmentFeeIndexRouteImport } from './routes/equipment-fee/index'
 import { Route as EquipmentCollectionIndexRouteImport } from './routes/equipment-collection/index'
 import { Route as SanitaryNapkinCreateRouteImport } from './routes/sanitary-napkin/create'
+import { Route as EquipmentCreateRouteImport } from './routes/equipment/create'
 import { Route as EquipmentFeeCreateRouteImport } from './routes/equipment-fee/create'
 
 const IndexRoute = IndexRouteImport.update({
@@ -24,6 +26,11 @@ const IndexRoute = IndexRouteImport.update({
 const SanitaryNapkinIndexRoute = SanitaryNapkinIndexRouteImport.update({
   id: '/sanitary-napkin/',
   path: '/sanitary-napkin/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const EquipmentIndexRoute = EquipmentIndexRouteImport.update({
+  id: '/equipment/',
+  path: '/equipment/',
   getParentRoute: () => rootRouteImport,
 } as any)
 const EquipmentFeeIndexRoute = EquipmentFeeIndexRouteImport.update({
@@ -42,6 +49,11 @@ const SanitaryNapkinCreateRoute = SanitaryNapkinCreateRouteImport.update({
   path: '/sanitary-napkin/create',
   getParentRoute: () => rootRouteImport,
 } as any)
+const EquipmentCreateRoute = EquipmentCreateRouteImport.update({
+  id: '/equipment/create',
+  path: '/equipment/create',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const EquipmentFeeCreateRoute = EquipmentFeeCreateRouteImport.update({
   id: '/equipment-fee/create',
   path: '/equipment-fee/create',
@@ -51,26 +63,32 @@ const EquipmentFeeCreateRoute = EquipmentFeeCreateRouteImport.update({
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/equipment-fee/create': typeof EquipmentFeeCreateRoute
+  '/equipment/create': typeof EquipmentCreateRoute
   '/sanitary-napkin/create': typeof SanitaryNapkinCreateRoute
   '/equipment-collection/': typeof EquipmentCollectionIndexRoute
   '/equipment-fee/': typeof EquipmentFeeIndexRoute
+  '/equipment/': typeof EquipmentIndexRoute
   '/sanitary-napkin/': typeof SanitaryNapkinIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/equipment-fee/create': typeof EquipmentFeeCreateRoute
+  '/equipment/create': typeof EquipmentCreateRoute
   '/sanitary-napkin/create': typeof SanitaryNapkinCreateRoute
   '/equipment-collection': typeof EquipmentCollectionIndexRoute
   '/equipment-fee': typeof EquipmentFeeIndexRoute
+  '/equipment': typeof EquipmentIndexRoute
   '/sanitary-napkin': typeof SanitaryNapkinIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/equipment-fee/create': typeof EquipmentFeeCreateRoute
+  '/equipment/create': typeof EquipmentCreateRoute
   '/sanitary-napkin/create': typeof SanitaryNapkinCreateRoute
   '/equipment-collection/': typeof EquipmentCollectionIndexRoute
   '/equipment-fee/': typeof EquipmentFeeIndexRoute
+  '/equipment/': typeof EquipmentIndexRoute
   '/sanitary-napkin/': typeof SanitaryNapkinIndexRoute
 }
 export interface FileRouteTypes {
@@ -78,34 +96,42 @@ export interface FileRouteTypes {
   fullPaths:
     | '/'
     | '/equipment-fee/create'
+    | '/equipment/create'
     | '/sanitary-napkin/create'
     | '/equipment-collection/'
     | '/equipment-fee/'
+    | '/equipment/'
     | '/sanitary-napkin/'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
     | '/equipment-fee/create'
+    | '/equipment/create'
     | '/sanitary-napkin/create'
     | '/equipment-collection'
     | '/equipment-fee'
+    | '/equipment'
     | '/sanitary-napkin'
   id:
     | '__root__'
     | '/'
     | '/equipment-fee/create'
+    | '/equipment/create'
     | '/sanitary-napkin/create'
     | '/equipment-collection/'
     | '/equipment-fee/'
+    | '/equipment/'
     | '/sanitary-napkin/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   EquipmentFeeCreateRoute: typeof EquipmentFeeCreateRoute
+  EquipmentCreateRoute: typeof EquipmentCreateRoute
   SanitaryNapkinCreateRoute: typeof SanitaryNapkinCreateRoute
   EquipmentCollectionIndexRoute: typeof EquipmentCollectionIndexRoute
   EquipmentFeeIndexRoute: typeof EquipmentFeeIndexRoute
+  EquipmentIndexRoute: typeof EquipmentIndexRoute
   SanitaryNapkinIndexRoute: typeof SanitaryNapkinIndexRoute
 }
 
@@ -123,6 +149,13 @@ declare module '@tanstack/react-router' {
       path: '/sanitary-napkin'
       fullPath: '/sanitary-napkin/'
       preLoaderRoute: typeof SanitaryNapkinIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/equipment/': {
+      id: '/equipment/'
+      path: '/equipment'
+      fullPath: '/equipment/'
+      preLoaderRoute: typeof EquipmentIndexRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/equipment-fee/': {
@@ -146,6 +179,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof SanitaryNapkinCreateRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/equipment/create': {
+      id: '/equipment/create'
+      path: '/equipment/create'
+      fullPath: '/equipment/create'
+      preLoaderRoute: typeof EquipmentCreateRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/equipment-fee/create': {
       id: '/equipment-fee/create'
       path: '/equipment-fee/create'
@@ -159,9 +199,11 @@ declare module '@tanstack/react-router' {
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   EquipmentFeeCreateRoute: EquipmentFeeCreateRoute,
+  EquipmentCreateRoute: EquipmentCreateRoute,
   SanitaryNapkinCreateRoute: SanitaryNapkinCreateRoute,
   EquipmentCollectionIndexRoute: EquipmentCollectionIndexRoute,
   EquipmentFeeIndexRoute: EquipmentFeeIndexRoute,
+  EquipmentIndexRoute: EquipmentIndexRoute,
   SanitaryNapkinIndexRoute: SanitaryNapkinIndexRoute,
 }
 export const routeTree = rootRouteImport

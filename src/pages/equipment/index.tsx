@@ -1,34 +1,10 @@
+import type { EquipmentTableItem } from './constant';
 import { transformToUTCDay } from '@/utils/timer';
 import { useNavigate } from '@tanstack/react-router';
-import { Button, Col, DatePicker, Form, Input, Row, Table, Card } from 'antd';
+import { Button, Card, Col, DatePicker, Form, Input, Row, Table, type TableColumnsType } from 'antd';
 import dayjs from 'dayjs';
 import { useState } from 'react';
 import useSWR from 'swr';
-
-interface EquipmentItem {
-    id: string;
-    created_at: string;
-    device_name: string;
-    device_model: string;
-    device_id: string;
-    sample_number: string;
-    inspection_item: string;
-    collection_time: string;
-    inspection_data: string | null;
-}
-
-interface EquipmentTableResponse {
-    data: {
-        items: EquipmentItem[];
-        total: number;
-    };
-}
-
-interface InspectionDataItem {
-    inspection_name: string;
-    inspection_unit: string;
-    inspection_value: string;
-}
 
 export const EquipmentTablePage = () => {
     const navigate = useNavigate();
@@ -38,13 +14,13 @@ export const EquipmentTablePage = () => {
         pageSize: 10,
     });
 
-    const { data, isLoading } = useSWR<EquipmentTableResponse>(['/api/v1/equipment', queryParams], {
+    const { data, isLoading } = useSWR(['/api/v1/equipment', queryParams], {
         refreshInterval: 30_000,
         revalidateOnFocus: true,
         keepPreviousData: true,
     });
 
-    const columns = [
+    const columns: TableColumnsType<EquipmentTableItem> = [
         { title: '设备名称', dataIndex: 'device_name' },
         { title: '设备型号', dataIndex: 'device_model' },
         { title: '设备 ID', dataIndex: 'device_id' },
@@ -58,11 +34,11 @@ export const EquipmentTablePage = () => {
         {
             title: '检测数据',
             dataIndex: 'inspection_data',
-            render: (value: EquipmentItem['inspection_data']) => {
+            render: (value: EquipmentTableItem['inspection_data']) => {
                 if (!value) return '-';
 
                 try {
-                    const items = JSON.parse(value) as InspectionDataItem[];
+                    const items = JSON.parse(value);
 
                     if (!Array.isArray(items) || items.length === 0) {
                         return '-';
@@ -93,7 +69,6 @@ export const EquipmentTablePage = () => {
                 }
             },
         },
-        // { title: '操作' },
     ];
 
     const tableData = data?.data.items ?? [];
@@ -152,7 +127,7 @@ export const EquipmentTablePage = () => {
                                 </Button>
                             </Col>
                             <Col span={24}>
-                                <Button type="primary" onClick={() => navigate({ to: '/equipment-collection' })}>
+                                <Button type="primary" onClick={() => navigate({ to: '/equipment/create' })}>
                                     新增设备
                                 </Button>
                             </Col>
