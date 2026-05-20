@@ -10,11 +10,18 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as EquipmentFeeIndexRouteImport } from './routes/equipment-fee/index'
 import { Route as EquipmentCollectionIndexRouteImport } from './routes/equipment-collection/index'
+import { Route as EquipmentFeeCreateRouteImport } from './routes/equipment-fee/create'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const EquipmentFeeIndexRoute = EquipmentFeeIndexRouteImport.update({
+  id: '/equipment-fee/',
+  path: '/equipment-fee/',
   getParentRoute: () => rootRouteImport,
 } as any)
 const EquipmentCollectionIndexRoute =
@@ -23,31 +30,53 @@ const EquipmentCollectionIndexRoute =
     path: '/equipment-collection/',
     getParentRoute: () => rootRouteImport,
   } as any)
+const EquipmentFeeCreateRoute = EquipmentFeeCreateRouteImport.update({
+  id: '/equipment-fee/create',
+  path: '/equipment-fee/create',
+  getParentRoute: () => rootRouteImport,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/equipment-fee/create': typeof EquipmentFeeCreateRoute
   '/equipment-collection/': typeof EquipmentCollectionIndexRoute
+  '/equipment-fee/': typeof EquipmentFeeIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/equipment-fee/create': typeof EquipmentFeeCreateRoute
   '/equipment-collection': typeof EquipmentCollectionIndexRoute
+  '/equipment-fee': typeof EquipmentFeeIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/equipment-fee/create': typeof EquipmentFeeCreateRoute
   '/equipment-collection/': typeof EquipmentCollectionIndexRoute
+  '/equipment-fee/': typeof EquipmentFeeIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/equipment-collection/'
+  fullPaths:
+    | '/'
+    | '/equipment-fee/create'
+    | '/equipment-collection/'
+    | '/equipment-fee/'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/equipment-collection'
-  id: '__root__' | '/' | '/equipment-collection/'
+  to: '/' | '/equipment-fee/create' | '/equipment-collection' | '/equipment-fee'
+  id:
+    | '__root__'
+    | '/'
+    | '/equipment-fee/create'
+    | '/equipment-collection/'
+    | '/equipment-fee/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  EquipmentFeeCreateRoute: typeof EquipmentFeeCreateRoute
   EquipmentCollectionIndexRoute: typeof EquipmentCollectionIndexRoute
+  EquipmentFeeIndexRoute: typeof EquipmentFeeIndexRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -59,6 +88,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/equipment-fee/': {
+      id: '/equipment-fee/'
+      path: '/equipment-fee'
+      fullPath: '/equipment-fee/'
+      preLoaderRoute: typeof EquipmentFeeIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/equipment-collection/': {
       id: '/equipment-collection/'
       path: '/equipment-collection'
@@ -66,12 +102,21 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof EquipmentCollectionIndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/equipment-fee/create': {
+      id: '/equipment-fee/create'
+      path: '/equipment-fee/create'
+      fullPath: '/equipment-fee/create'
+      preLoaderRoute: typeof EquipmentFeeCreateRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  EquipmentFeeCreateRoute: EquipmentFeeCreateRoute,
   EquipmentCollectionIndexRoute: EquipmentCollectionIndexRoute,
+  EquipmentFeeIndexRoute: EquipmentFeeIndexRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

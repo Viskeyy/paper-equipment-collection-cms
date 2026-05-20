@@ -99,7 +99,7 @@ export const EquipmentTablePage = () => {
     const tableData = data?.data.items ?? [];
 
     return (
-        <Card title="设备信息列表">
+        <Card title="设备信息列表" className="w-full">
             <Table
                 rowKey="id"
                 loading={isLoading}
