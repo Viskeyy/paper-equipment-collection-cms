@@ -1,31 +1,27 @@
+import type { EquipmentFeeFormItem, EquipmentFeeTableItem } from './constant';
 import { EQUIPMENT_FEE_TYPE } from './constant';
+import type { ApiResponse } from '@/utils/fetcher';
 import { postJson } from '@/utils/fetcher';
 import { useNavigate } from '@tanstack/react-router';
 import { Button, Card, Col, Form, Input, Row, Select, message } from 'antd';
-import { useSWRConfig } from 'swr';
 import useSWRMutation from 'swr/mutation';
 
 export const EquipmentFeeCreate = () => {
     const navigate = useNavigate();
-    const { mutate } = useSWRConfig();
-    const { trigger, isMutating } = useSWRMutation<CreateEquipmentResponse, Error, string, CreateEquipmentPayload>(
-        '/api/v1/equipment-fee',
-        postJson,
-    );
+    const { trigger, isMutating } = useSWRMutation<
+        ApiResponse<EquipmentFeeTableItem>,
+        Error,
+        string,
+        EquipmentFeeFormItem
+    >('/api/v1/equipment-fee', postJson);
 
-    const submit = async (value: EquipmentCollectionItem) => {
-        const bodyData: CreateEquipmentPayload = {
-            ...value,
-        };
-
+    const submit = async (value: EquipmentFeeFormItem) => {
         try {
-            const result = await trigger(bodyData);
-
-            await mutate((key) => Array.isArray(key) && key[0] === '/api/v1/equipment-fee', undefined, {
-                revalidate: true,
-            });
-
-            message.success(result.message || '保存成功');
+            const res = await trigger(value);
+            if (res.code !== 200001) {
+                throw new Error(res.messages || '保存失败，请稍后重试');
+            }
+            message.success('保存成功');
             navigate({ to: '/equipment-fee' });
         } catch (error) {
             message.error(error instanceof Error ? error.message : '保存失败，请稍后重试');

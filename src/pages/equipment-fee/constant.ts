@@ -7,3 +7,14 @@ export const EQUIPMENT_FEE_TYPE = [
     { label: '出版专利费', value: 'equipment_patent' },
     { label: '差旅交流费', value: 'equipment_travel' },
 ];
+
+export type EquipmentFeeFormItem = {
+    fee_type: string;
+    fee_item: string;
+    appraisal: string;
+    remark?: string;
+};
+export type EquipmentFeeTableItem = EquipmentFeeFormItem & {
+    id: string;
+    created_at: string;
+};

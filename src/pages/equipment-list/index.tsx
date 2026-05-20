@@ -159,6 +159,7 @@ export const EquipmentTablePage = () => {
                         </Row>
                     </Form>
                 )}
+                scroll={{ x: 'max-content' }}
                 bordered
                 columns={columns}
                 dataSource={tableData}

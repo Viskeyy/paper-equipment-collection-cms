@@ -1,25 +1,10 @@
-import { EQUIPMENT_FEE_TYPE } from './constant';
+import { EQUIPMENT_FEE_TYPE, type EquipmentFeeTableItem } from './constant';
 import { useNavigate } from '@tanstack/react-router';
-import { Button, Card, Col, Form, Row, Select, Table } from 'antd';
+import { Button, Card, Col, Form, Row, Select, Table, type TableColumnsType } from 'antd';
 import { useState } from 'react';
 import useSWR from 'swr';
 
-interface EquipmentFeeItem {
-    id: string;
-    fee_type: string;
-    equipment_item: string;
-    appraisal: number;
-    remark: string;
-}
-
 export const EquipmentFee = () => {
-    interface EquipmentTableResponse {
-        data: {
-            items: EquipmentFeeItem[];
-            total: number;
-        };
-    }
-
     const navigate = useNavigate();
 
     const [queryParams, setQueryParams] = useState({
@@ -27,14 +12,14 @@ export const EquipmentFee = () => {
         pageSize: 10,
     });
 
-    const { data, isLoading } = useSWR<EquipmentTableResponse>(['/api/v1/equipment-fee', queryParams], {
+    const { data, isLoading } = useSWR(['/api/v1/equipment-fee', queryParams], {
         refreshInterval: 30_000,
         revalidateOnFocus: true,
         keepPreviousData: true,
     });
 
-    const columns = [
-        { title: '序号', render: (_, __, index: number) => index + 1 },
+    const columns: TableColumnsType<EquipmentFeeTableItem> = [
+        { title: '序号', render: (_: unknown, __: unknown, index: number) => index + 1 },
         {
             title: '费用类别',
             dataIndex: 'fee_type',
@@ -85,6 +70,7 @@ export const EquipmentFee = () => {
                         </Row>
                     </Form>
                 )}
+                scroll={{ x: 'max-content' }}
                 columns={columns}
                 bordered
                 dataSource={tableData}
