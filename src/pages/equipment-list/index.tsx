@@ -159,6 +159,7 @@ export const EquipmentTablePage = () => {
                         </Row>
                     </Form>
                 )}
+                bordered
                 columns={columns}
                 dataSource={tableData}
                 pagination={{

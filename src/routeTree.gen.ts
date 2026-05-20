@@ -10,13 +10,20 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as SanitaryNapkinIndexRouteImport } from './routes/sanitary-napkin/index'
 import { Route as EquipmentFeeIndexRouteImport } from './routes/equipment-fee/index'
 import { Route as EquipmentCollectionIndexRouteImport } from './routes/equipment-collection/index'
+import { Route as SanitaryNapkinCreateRouteImport } from './routes/sanitary-napkin/create'
 import { Route as EquipmentFeeCreateRouteImport } from './routes/equipment-fee/create'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const SanitaryNapkinIndexRoute = SanitaryNapkinIndexRouteImport.update({
+  id: '/sanitary-napkin/',
+  path: '/sanitary-napkin/',
   getParentRoute: () => rootRouteImport,
 } as any)
 const EquipmentFeeIndexRoute = EquipmentFeeIndexRouteImport.update({
@@ -30,6 +37,11 @@ const EquipmentCollectionIndexRoute =
     path: '/equipment-collection/',
     getParentRoute: () => rootRouteImport,
   } as any)
+const SanitaryNapkinCreateRoute = SanitaryNapkinCreateRouteImport.update({
+  id: '/sanitary-napkin/create',
+  path: '/sanitary-napkin/create',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const EquipmentFeeCreateRoute = EquipmentFeeCreateRouteImport.update({
   id: '/equipment-fee/create',
   path: '/equipment-fee/create',
@@ -39,44 +51,62 @@ const EquipmentFeeCreateRoute = EquipmentFeeCreateRouteImport.update({
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/equipment-fee/create': typeof EquipmentFeeCreateRoute
+  '/sanitary-napkin/create': typeof SanitaryNapkinCreateRoute
   '/equipment-collection/': typeof EquipmentCollectionIndexRoute
   '/equipment-fee/': typeof EquipmentFeeIndexRoute
+  '/sanitary-napkin/': typeof SanitaryNapkinIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/equipment-fee/create': typeof EquipmentFeeCreateRoute
+  '/sanitary-napkin/create': typeof SanitaryNapkinCreateRoute
   '/equipment-collection': typeof EquipmentCollectionIndexRoute
   '/equipment-fee': typeof EquipmentFeeIndexRoute
+  '/sanitary-napkin': typeof SanitaryNapkinIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/equipment-fee/create': typeof EquipmentFeeCreateRoute
+  '/sanitary-napkin/create': typeof SanitaryNapkinCreateRoute
   '/equipment-collection/': typeof EquipmentCollectionIndexRoute
   '/equipment-fee/': typeof EquipmentFeeIndexRoute
+  '/sanitary-napkin/': typeof SanitaryNapkinIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
     | '/'
     | '/equipment-fee/create'
+    | '/sanitary-napkin/create'
     | '/equipment-collection/'
     | '/equipment-fee/'
+    | '/sanitary-napkin/'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/equipment-fee/create' | '/equipment-collection' | '/equipment-fee'
+  to:
+    | '/'
+    | '/equipment-fee/create'
+    | '/sanitary-napkin/create'
+    | '/equipment-collection'
+    | '/equipment-fee'
+    | '/sanitary-napkin'
   id:
     | '__root__'
     | '/'
     | '/equipment-fee/create'
+    | '/sanitary-napkin/create'
     | '/equipment-collection/'
     | '/equipment-fee/'
+    | '/sanitary-napkin/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   EquipmentFeeCreateRoute: typeof EquipmentFeeCreateRoute
+  SanitaryNapkinCreateRoute: typeof SanitaryNapkinCreateRoute
   EquipmentCollectionIndexRoute: typeof EquipmentCollectionIndexRoute
   EquipmentFeeIndexRoute: typeof EquipmentFeeIndexRoute
+  SanitaryNapkinIndexRoute: typeof SanitaryNapkinIndexRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -86,6 +116,13 @@ declare module '@tanstack/react-router' {
       path: '/'
       fullPath: '/'
       preLoaderRoute: typeof IndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/sanitary-napkin/': {
+      id: '/sanitary-napkin/'
+      path: '/sanitary-napkin'
+      fullPath: '/sanitary-napkin/'
+      preLoaderRoute: typeof SanitaryNapkinIndexRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/equipment-fee/': {
@@ -102,6 +139,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof EquipmentCollectionIndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/sanitary-napkin/create': {
+      id: '/sanitary-napkin/create'
+      path: '/sanitary-napkin/create'
+      fullPath: '/sanitary-napkin/create'
+      preLoaderRoute: typeof SanitaryNapkinCreateRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/equipment-fee/create': {
       id: '/equipment-fee/create'
       path: '/equipment-fee/create'
@@ -115,8 +159,10 @@ declare module '@tanstack/react-router' {
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   EquipmentFeeCreateRoute: EquipmentFeeCreateRoute,
+  SanitaryNapkinCreateRoute: SanitaryNapkinCreateRoute,
   EquipmentCollectionIndexRoute: EquipmentCollectionIndexRoute,
   EquipmentFeeIndexRoute: EquipmentFeeIndexRoute,
+  SanitaryNapkinIndexRoute: SanitaryNapkinIndexRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

@@ -77,3 +77,10 @@ export const postJson = async <TResponse, TBody>(
 
     return parseResponse(res) as Promise<TResponse>;
 };
+
+export type ApiResponse<T> = {
+    status: string;
+    code: number;
+    data: T;
+    messages?: string;
+};

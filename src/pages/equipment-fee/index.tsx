@@ -86,6 +86,7 @@ export const EquipmentFee = () => {
                     </Form>
                 )}
                 columns={columns}
+                bordered
                 dataSource={tableData}
                 pagination={{
                     total: data?.data.total ?? 0,
