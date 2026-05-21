@@ -8,12 +8,14 @@ export const Sidebar = () => {
         { key: 'equipment', label: <Link to="/equipment">数据检表</Link> },
         { key: 'equipment-fee', label: <Link to="/equipment-fee">设备费</Link> },
         { key: 'sanitary-napkin', label: <Link to="/sanitary-napkin">卫生巾设备</Link> },
+        { key: 'diapers', label: <Link to="/diapers">纸尿裤设备</Link> },
     ];
 
     const selectedKey = (() => {
         if (pathname.startsWith('/equipment-fee')) return 'equipment-fee';
         if (pathname.startsWith('/sanitary-napkin')) return 'sanitary-napkin';
         if (pathname.startsWith('/equipment')) return 'equipment';
+        if (pathname.startsWith('/diapers')) return 'diapers';
 
         return '';
     })();

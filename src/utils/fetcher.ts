@@ -26,7 +26,8 @@ export const TOKEN_KEY = 'token';
 const PROD_BASE_URL = 'https://zaozhi-equipment-collection-api.vercel.app';
 const DEV_BASE_URL = 'http://localhost:8080';
 
-const baseUrl = import.meta.env.PROD ? PROD_BASE_URL : DEV_BASE_URL;
+const baseUrl = PROD_BASE_URL;
+// const baseUrl = import.meta.env.PROD ? PROD_BASE_URL : DEV_BASE_URL;
 
 const buildUrl = (url: string, params?: FetcherQueryParams): string => {
     const requestUrl = new URL(baseUrl + url);

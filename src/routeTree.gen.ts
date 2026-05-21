@@ -13,9 +13,11 @@ import { Route as IndexRouteImport } from './routes/index'
 import { Route as SanitaryNapkinIndexRouteImport } from './routes/sanitary-napkin/index'
 import { Route as EquipmentIndexRouteImport } from './routes/equipment/index'
 import { Route as EquipmentFeeIndexRouteImport } from './routes/equipment-fee/index'
+import { Route as DiapersIndexRouteImport } from './routes/diapers/index'
 import { Route as SanitaryNapkinCreateRouteImport } from './routes/sanitary-napkin/create'
 import { Route as EquipmentCreateRouteImport } from './routes/equipment/create'
 import { Route as EquipmentFeeCreateRouteImport } from './routes/equipment-fee/create'
+import { Route as DiapersCreateRouteImport } from './routes/diapers/create'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
@@ -37,6 +39,11 @@ const EquipmentFeeIndexRoute = EquipmentFeeIndexRouteImport.update({
   path: '/equipment-fee/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const DiapersIndexRoute = DiapersIndexRouteImport.update({
+  id: '/diapers/',
+  path: '/diapers/',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const SanitaryNapkinCreateRoute = SanitaryNapkinCreateRouteImport.update({
   id: '/sanitary-napkin/create',
   path: '/sanitary-napkin/create',
@@ -52,21 +59,30 @@ const EquipmentFeeCreateRoute = EquipmentFeeCreateRouteImport.update({
   path: '/equipment-fee/create',
   getParentRoute: () => rootRouteImport,
 } as any)
+const DiapersCreateRoute = DiapersCreateRouteImport.update({
+  id: '/diapers/create',
+  path: '/diapers/create',
+  getParentRoute: () => rootRouteImport,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/diapers/create': typeof DiapersCreateRoute
   '/equipment-fee/create': typeof EquipmentFeeCreateRoute
   '/equipment/create': typeof EquipmentCreateRoute
   '/sanitary-napkin/create': typeof SanitaryNapkinCreateRoute
+  '/diapers/': typeof DiapersIndexRoute
   '/equipment-fee/': typeof EquipmentFeeIndexRoute
   '/equipment/': typeof EquipmentIndexRoute
   '/sanitary-napkin/': typeof SanitaryNapkinIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/diapers/create': typeof DiapersCreateRoute
   '/equipment-fee/create': typeof EquipmentFeeCreateRoute
   '/equipment/create': typeof EquipmentCreateRoute
   '/sanitary-napkin/create': typeof SanitaryNapkinCreateRoute
+  '/diapers': typeof DiapersIndexRoute
   '/equipment-fee': typeof EquipmentFeeIndexRoute
   '/equipment': typeof EquipmentIndexRoute
   '/sanitary-napkin': typeof SanitaryNapkinIndexRoute
@@ -74,9 +90,11 @@ export interface FileRoutesByTo {
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/diapers/create': typeof DiapersCreateRoute
   '/equipment-fee/create': typeof EquipmentFeeCreateRoute
   '/equipment/create': typeof EquipmentCreateRoute
   '/sanitary-napkin/create': typeof SanitaryNapkinCreateRoute
+  '/diapers/': typeof DiapersIndexRoute
   '/equipment-fee/': typeof EquipmentFeeIndexRoute
   '/equipment/': typeof EquipmentIndexRoute
   '/sanitary-napkin/': typeof SanitaryNapkinIndexRoute
@@ -85,27 +103,33 @@ export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
     | '/'
+    | '/diapers/create'
     | '/equipment-fee/create'
     | '/equipment/create'
     | '/sanitary-napkin/create'
+    | '/diapers/'
     | '/equipment-fee/'
     | '/equipment/'
     | '/sanitary-napkin/'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
+    | '/diapers/create'
     | '/equipment-fee/create'
     | '/equipment/create'
     | '/sanitary-napkin/create'
+    | '/diapers'
     | '/equipment-fee'
     | '/equipment'
     | '/sanitary-napkin'
   id:
     | '__root__'
     | '/'
+    | '/diapers/create'
     | '/equipment-fee/create'
     | '/equipment/create'
     | '/sanitary-napkin/create'
+    | '/diapers/'
     | '/equipment-fee/'
     | '/equipment/'
     | '/sanitary-napkin/'
@@ -113,9 +137,11 @@ export interface FileRouteTypes {
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  DiapersCreateRoute: typeof DiapersCreateRoute
   EquipmentFeeCreateRoute: typeof EquipmentFeeCreateRoute
   EquipmentCreateRoute: typeof EquipmentCreateRoute
   SanitaryNapkinCreateRoute: typeof SanitaryNapkinCreateRoute
+  DiapersIndexRoute: typeof DiapersIndexRoute
   EquipmentFeeIndexRoute: typeof EquipmentFeeIndexRoute
   EquipmentIndexRoute: typeof EquipmentIndexRoute
   SanitaryNapkinIndexRoute: typeof SanitaryNapkinIndexRoute
@@ -151,6 +177,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof EquipmentFeeIndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/diapers/': {
+      id: '/diapers/'
+      path: '/diapers'
+      fullPath: '/diapers/'
+      preLoaderRoute: typeof DiapersIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/sanitary-napkin/create': {
       id: '/sanitary-napkin/create'
       path: '/sanitary-napkin/create'
@@ -172,14 +205,23 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof EquipmentFeeCreateRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/diapers/create': {
+      id: '/diapers/create'
+      path: '/diapers/create'
+      fullPath: '/diapers/create'
+      preLoaderRoute: typeof DiapersCreateRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  DiapersCreateRoute: DiapersCreateRoute,
   EquipmentFeeCreateRoute: EquipmentFeeCreateRoute,
   EquipmentCreateRoute: EquipmentCreateRoute,
   SanitaryNapkinCreateRoute: SanitaryNapkinCreateRoute,
+  DiapersIndexRoute: DiapersIndexRoute,
   EquipmentFeeIndexRoute: EquipmentFeeIndexRoute,
   EquipmentIndexRoute: EquipmentIndexRoute,
   SanitaryNapkinIndexRoute: SanitaryNapkinIndexRoute,

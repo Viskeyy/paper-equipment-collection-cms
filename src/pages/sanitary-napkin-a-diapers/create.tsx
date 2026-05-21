@@ -1,8 +1,8 @@
-import type { SanitaryNapkinTableItem, SanitaryNapkinCreateItem, SanitaryNapkinFormItem } from './constant';
+import { type SanitaryNapkinCreateItem, type SanitaryNapkinFormItem, type SanitaryNapkinTableItem } from './constant';
 import { postJson, type ApiResponse } from '@/utils/fetcher';
 import { transformToUTCString } from '@/utils/timer';
 import { useNavigate } from '@tanstack/react-router';
-import { Button, Card, Col, DatePicker, Form, Input, InputNumber, message, Row } from 'antd';
+import { Button, Card, Col, DatePicker, Form, Input, InputNumber, message, Row, Select } from 'antd';
 import useSWRMutation from 'swr/mutation';
 
 const MeasurementCard = ({ title, field }: { title: string; field: string }) => {
@@ -44,8 +44,20 @@ const MeasurementCard = ({ title, field }: { title: string; field: string }) => 
     );
 };
 
-export const EquipmentSanitaryNapkinCreate = () => {
+export const SanitaryNapkinADiapersForm = ({ equipmentType }: { equipmentType: string }) => {
     const navigate = useNavigate();
+
+    const isDiapers = equipmentType === 'diapers';
+
+    const instrumentNoOptions = isDiapers
+        ? [
+              { label: 'T025A', value: 'T025A' },
+              { label: 'T025B', value: 'T025B' },
+          ]
+        : [
+              { label: 'T026A', value: 'T026A' },
+              { label: 'T026B', value: 'T026B' },
+          ];
 
     const { trigger, isMutating } = useSWRMutation<
         ApiResponse<SanitaryNapkinTableItem>,
@@ -74,16 +86,16 @@ export const EquipmentSanitaryNapkinCreate = () => {
     };
 
     return (
-        <Card title="卫生巾检测信息收集" className="w-full">
+        <Card title={isDiapers ? '纸尿裤检测信息收集' : '卫生巾检测信息收集'} className="w-full">
             <Form className="mx-auto! w-1/2" onFinish={submit}>
                 <Row gutter={16}>
                     <Col span={24}>
                         <Form.Item
                             label="仪器编号"
                             name="instrument_no"
-                            rules={[{ required: true, message: '请输入仪器编号' }]}
+                            rules={[{ required: true, message: '请选择仪器编号' }]}
                         >
-                            <Input placeholder="请输入仪器编号" />
+                            <Select options={instrumentNoOptions} placeholder="请选择仪器编号" />
                         </Form.Item>
                     </Col>
                     <Col span={24}>
@@ -157,15 +169,22 @@ export const EquipmentSanitaryNapkinCreate = () => {
                         </Form.Item>
                     </Col>
 
-                    <MeasurementCard title="一次吸收时间" field="first_absorb" />
-                    <MeasurementCard title="二次吸收时间" field="second_absorb" />
-                    <MeasurementCard title="回渗量" field="rewet" />
+                    {isDiapers && (
+                        <>
+                            <MeasurementCard title="一次吸收时间" field="first_absorb" />
+                            <MeasurementCard title="二次吸收时间" field="second_absorb" />
+                            <MeasurementCard title="回渗量" field="rewet" />
+                        </>
+                    )}
 
                     <Col span={24} className="text-right">
                         <Button type="primary" htmlType="submit" loading={isMutating}>
                             保存
                         </Button>
-                        <Button className="ml-4" onClick={() => navigate({ to: '/sanitary-napkin' })}>
+                        <Button
+                            className="ml-4"
+                            onClick={() => navigate({ to: isDiapers ? '/diapers' : '/sanitary-napkin' })}
+                        >
                             取消
                         </Button>
                     </Col>
