@@ -23,3 +23,10 @@ dist-ssr
 *.sln
 *.sw?
 .vercel
+
+# env files
+.env*
+
+# router cache
+.tanstack
+
