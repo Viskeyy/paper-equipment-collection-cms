@@ -1,5 +1,4 @@
 import { type DiapersItemPayload, type FormItem, type SanitaryNapkinItemPayload } from './constant';
-import { useNavigate } from '@tanstack/react-router';
 import { Button, Card, Col, DatePicker, Form, Input, InputNumber, message, Row, Select } from 'antd';
 import dayjs from 'dayjs';
 import { useState } from 'react';
@@ -59,12 +58,16 @@ const MeasurementCard = ({ title, field }: { title: string; field: string }) => 
 };
 
 export const EquipmentInfoCollectionForm = () => {
-    const navigate = useNavigate();
     const [form] = Form.useForm();
     const [loading, setLoading] = useState(false);
-    const DEVICE_MODEL_OPTIONS = [
+
+    const DIAPER_DEVICE_MODEL_OPTIONS = [
         { label: 'T025A', value: 'T025A' },
         { label: 'T025B', value: 'T025B' },
+    ];
+    const SANITARY_NAPKIN_DEVICE_MODEL_OPTIONS = [
+        { label: 'T017B', value: 'T017B' },
+        { label: 'T017C', value: 'T017C' },
     ];
 
     const submit = async (values: FormItem) => {
@@ -95,7 +98,7 @@ export const EquipmentInfoCollectionForm = () => {
             tester: '测试员一',
         };
 
-        if (values.device_type === 'diapers') {
+        if (values.device_type === 'diaper') {
             bodyData = {
                 ...metaData,
                 data: {
@@ -152,7 +155,7 @@ export const EquipmentInfoCollectionForm = () => {
                         >
                             <Select
                                 options={[
-                                    { label: '纸尿裤', value: 'diapers' },
+                                    { label: '纸尿裤', value: 'diaper' },
                                     { label: '卫生巾', value: 'sanitary' },
                                 ]}
                                 placeholder="请选择设备类型"
@@ -165,7 +168,14 @@ export const EquipmentInfoCollectionForm = () => {
                             name="device_model"
                             rules={[{ required: true, message: '请选择设备型号' }]}
                         >
-                            <Select options={DEVICE_MODEL_OPTIONS} placeholder="请选择设备型号" />
+                            <Select
+                                options={
+                                    deviceType === 'diaper'
+                                        ? DIAPER_DEVICE_MODEL_OPTIONS
+                                        : SANITARY_NAPKIN_DEVICE_MODEL_OPTIONS
+                                }
+                                placeholder="请选择设备型号"
+                            />
                         </Form.Item>
                     </Col>
                     <Col span={24}>
@@ -250,7 +260,7 @@ export const EquipmentInfoCollectionForm = () => {
 
                     <MeasurementCard title="一次吸收时间" field="first_absorption_time_samples" />
                     <MeasurementCard title="二次吸收时间" field="second_absorption_time_samples" />
-                    {deviceType === 'diapers' && (
+                    {deviceType === 'diaper' && (
                         <>
                             <MeasurementCard title="三次吸收时间" field="third_absorption_time_samples" />
                             <MeasurementCard title="渗透量" field="permeation_samples" />
@@ -262,7 +272,7 @@ export const EquipmentInfoCollectionForm = () => {
                         <Button type="primary" htmlType="submit" loading={loading}>
                             保存
                         </Button>
-                        <Button className="ml-4" onClick={() => navigate({ to: '/diapers' })} loading={loading}>
+                        <Button className="ml-4" onClick={() => form.resetFields()} loading={loading}>
                             取消
                         </Button>
                     </Col>
