@@ -1,7 +1,17 @@
-import { type DiapersItemPayload, type FormItem, type SanitaryNapkinItemPayload } from './constant';
+import {
+    DIAPER_DEVICE_MODEL_OPTIONS,
+    DIAPER_SAMPLE_MODEL_LIQUID_AMOUNT_MAP,
+    DIAPER_SAMPLE_MODEL_OPTIONS,
+    SANITARY_NAPKIN_DEVICE_MODEL_OPTIONS,
+    type DiapersItemPayload,
+    type FormItem,
+    type SanitaryNapkinItemPayload,
+} from './constant';
 import { Button, Card, Col, DatePicker, Form, Input, InputNumber, message, Row, Select } from 'antd';
 import dayjs from 'dayjs';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
+
+const LAST_FORM_DATA_STORAGE_KEY = 'equipment-info-collection:last-form-data';
 
 const MeasurementCard = ({ title, field }: { title: string; field: string }) => {
     return (
@@ -12,45 +22,50 @@ const MeasurementCard = ({ title, field }: { title: string; field: string }) => 
                 <Form.Item
                     label="试样一"
                     name={[field, `${field}_1`]}
+                    initialValue={0}
                     rules={[{ required: true, message: '请填写必填项' }]}
                 >
-                    <InputNumber className="w-full!" precision={3} controls={false} />
+                    <InputNumber className="w-full!" controls={false} />
                 </Form.Item>
             </Col>
             <Col span={8}>
                 <Form.Item
                     label="试样二"
                     name={[field, `${field}_2`]}
+                    initialValue={0}
                     rules={[{ required: true, message: '请填写必填项' }]}
                 >
-                    <InputNumber className="w-full!" precision={3} controls={false} />
+                    <InputNumber className="w-full!" controls={false} />
                 </Form.Item>
             </Col>
             <Col span={8}>
                 <Form.Item
                     label="试样三"
                     name={[field, `${field}_3`]}
+                    initialValue={0}
                     rules={[{ required: true, message: '请填写必填项' }]}
                 >
-                    <InputNumber className="w-full!" precision={3} controls={false} />
+                    <InputNumber className="w-full!" controls={false} />
                 </Form.Item>
             </Col>
             <Col span={8}>
                 <Form.Item
                     label="试样四"
                     name={[field, `${field}_4`]}
+                    initialValue={0}
                     rules={[{ required: true, message: '请填写必填项' }]}
                 >
-                    <InputNumber className="w-full!" precision={3} controls={false} />
+                    <InputNumber className="w-full!" controls={false} />
                 </Form.Item>
             </Col>
             <Col span={8}>
                 <Form.Item
                     label="试样五"
                     name={[field, `${field}_5`]}
+                    initialValue={0}
                     rules={[{ required: true, message: '请填写必填项' }]}
                 >
-                    <InputNumber className="w-full!" precision={3} controls={false} />
+                    <InputNumber className="w-full!" controls={false} />
                 </Form.Item>
             </Col>
         </Row>
@@ -60,15 +75,6 @@ const MeasurementCard = ({ title, field }: { title: string; field: string }) => 
 export const EquipmentInfoCollectionForm = () => {
     const [form] = Form.useForm();
     const [loading, setLoading] = useState(false);
-
-    const DIAPER_DEVICE_MODEL_OPTIONS = [
-        { label: 'T025A', value: 'T025A' },
-        { label: 'T025B', value: 'T025B' },
-    ];
-    const SANITARY_NAPKIN_DEVICE_MODEL_OPTIONS = [
-        { label: 'T017B', value: 'T017B' },
-        { label: 'T017C', value: 'T017C' },
-    ];
 
     const submit = async (values: FormItem) => {
         setLoading(true);
@@ -125,11 +131,16 @@ export const EquipmentInfoCollectionForm = () => {
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify(bodyData),
             });
-            if (!res.ok) {
-                throw new Error(`请求失败: ${res.status}`);
-            }
+            if (!res.ok) throw new Error(`请求失败: ${res.status}`);
+
             message.success('保存成功');
-            form.resetFields();
+
+            const { device_type, device_model, device_id, sample_number } = values;
+            localStorage.setItem(
+                LAST_FORM_DATA_STORAGE_KEY,
+                JSON.stringify({ device_type, device_model, device_id, sample_number }),
+            );
+            globalThis.location.reload();
         } catch (error) {
             message.error(error instanceof Error ? error.message : '保存失败，请稍后重试');
         } finally {
@@ -138,6 +149,32 @@ export const EquipmentInfoCollectionForm = () => {
     };
 
     const deviceType = Form.useWatch('device_type', form);
+    const sampleModel = Form.useWatch('sample_model', form);
+
+    useEffect(() => {
+        const lastFormData = localStorage.getItem(LAST_FORM_DATA_STORAGE_KEY);
+        if (!lastFormData) {
+            return;
+        }
+
+        try {
+            const parsedLastFormData = JSON.parse(lastFormData) as Pick<
+                FormItem,
+                'device_type' | 'device_model' | 'device_id' | 'sample_number'
+            >;
+
+            form.setFieldsValue(parsedLastFormData);
+        } catch {
+            localStorage.removeItem(LAST_FORM_DATA_STORAGE_KEY);
+        }
+    }, [form]);
+
+    useEffect(() => {
+        if (!sampleModel) return;
+        const defaultAmount = DIAPER_SAMPLE_MODEL_LIQUID_AMOUNT_MAP[sampleModel];
+        if (defaultAmount === undefined) return;
+        form.setFieldValue('amount_of_liquid', defaultAmount);
+    }, [form, sampleModel]);
 
     return (
         <Card
@@ -155,8 +192,8 @@ export const EquipmentInfoCollectionForm = () => {
                         >
                             <Select
                                 options={[
-                                    { label: '纸尿裤', value: 'diaper' },
-                                    { label: '卫生巾', value: 'sanitary' },
+                                    { label: '纸尿裤吸收性能测试仪', value: 'diaper' },
+                                    { label: '卫生巾吸收性能测试仪', value: 'sanitary' },
                                 ]}
                                 placeholder="请选择设备类型"
                             />
@@ -202,13 +239,18 @@ export const EquipmentInfoCollectionForm = () => {
                             name="sample_model"
                             rules={[{ required: true, message: '请输入样品型号' }]}
                         >
-                            <Input placeholder="请输入样品型号" />
+                            {deviceType === 'diaper' ? (
+                                <Select placeholder="请选择样品型号" options={DIAPER_SAMPLE_MODEL_OPTIONS} />
+                            ) : (
+                                <Input placeholder="请输入样品型号" />
+                            )}
                         </Form.Item>
                     </Col>
                     <Col span={24}>
                         <Form.Item
                             label="加液次数"
                             name="times_of_add_liquid"
+                            initialValue={2}
                             rules={[{ required: true, message: '请输入加液次数' }]}
                         >
                             <InputNumber
@@ -224,34 +266,27 @@ export const EquipmentInfoCollectionForm = () => {
                         <Form.Item
                             label="加液量"
                             name="amount_of_liquid"
+                            initialValue={0}
                             rules={[{ required: true, message: '请输入加液量' }]}
                         >
-                            <InputNumber
-                                className="w-full!"
-                                precision={3}
-                                placeholder="请输入加液量"
-                                controls={false}
-                            />
+                            <InputNumber className="w-full!" placeholder="请输入加液量" controls={false} />
                         </Form.Item>
                     </Col>
                     <Col span={24}>
                         <Form.Item
                             label="保压时间"
                             name="holding_time"
+                            initialValue={60}
                             rules={[{ required: true, message: '请输入保压时间' }]}
                         >
-                            <InputNumber
-                                className="w-full!"
-                                precision={3}
-                                placeholder="请输入保压时间"
-                                controls={false}
-                            />
+                            <InputNumber className="w-full!" placeholder="请输入保压时间" controls={false} />
                         </Form.Item>
                     </Col>
                     <Col span={24}>
                         <Form.Item
                             label="打印时间"
                             name="sampling_at"
+                            initialValue={dayjs()}
                             rules={[{ required: true, message: '请选择打印时间' }]}
                         >
                             <DatePicker showTime className="w-full" />
@@ -272,7 +307,7 @@ export const EquipmentInfoCollectionForm = () => {
                         <Button type="primary" htmlType="submit" loading={loading}>
                             保存
                         </Button>
-                        <Button className="ml-4" onClick={() => form.resetFields()} loading={loading}>
+                        <Button className="ml-4" onClick={() => globalThis.location.reload()} loading={loading}>
                             取消
                         </Button>
                     </Col>
