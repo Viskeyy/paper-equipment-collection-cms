@@ -1,6 +1,0 @@
-import { SanitaryNapkinADiapersForm } from '@/pages/sanitary-napkin-a-diapers/create';
-import { createFileRoute } from '@tanstack/react-router';
-
-export const Route = createFileRoute('/sanitary-napkin/create')({
-    component: () => <SanitaryNapkinADiapersForm equipmentType="sanitaryNapkin" />,
-});
