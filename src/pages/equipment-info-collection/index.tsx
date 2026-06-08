@@ -3,6 +3,7 @@ import {
     DIAPER_SAMPLE_MODEL_LIQUID_AMOUNT_MAP,
     DIAPER_SAMPLE_MODEL_OPTIONS,
     SANITARY_NAPKIN_DEVICE_MODEL_OPTIONS,
+    SANITARY_SAMPLE_MODEL_OPTIONS,
     type DiapersItemPayload,
     type FormItem,
     type SanitaryNapkinItemPayload,
@@ -98,7 +99,7 @@ export const EquipmentInfoCollectionForm = () => {
             back_seepage_samples: Object.values(back_seepage_samples),
         };
         const metaData = {
-            source_ip: '127.0.0.1',
+            source_ip: 'manually_entered',
             project_name: 'default',
             laboratory: '第一实验室',
             tester: '测试员一',
@@ -242,7 +243,7 @@ export const EquipmentInfoCollectionForm = () => {
                             {deviceType === 'diaper' ? (
                                 <Select placeholder="请选择样品型号" options={DIAPER_SAMPLE_MODEL_OPTIONS} />
                             ) : (
-                                <Input placeholder="请输入样品型号" />
+                                <Select placeholder="请选择样品型号" options={SANITARY_SAMPLE_MODEL_OPTIONS} />
                             )}
                         </Form.Item>
                     </Col>
