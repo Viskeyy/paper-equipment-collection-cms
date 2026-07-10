@@ -102,7 +102,7 @@ export const EquipmentInfoCollectionForm = () => {
             source_ip: 'manually_entered',
             project_name: 'default',
             laboratory: '第一实验室',
-            tester: '测试员一',
+            tester: localStorage.getItem('fullname') || '未知用户',
         };
 
         if (values.device_type === 'diaper') {
