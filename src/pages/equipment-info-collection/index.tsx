@@ -14,7 +14,7 @@ import { useEffect, useState } from 'react';
 
 const LAST_FORM_DATA_STORAGE_KEY = 'equipment-info-collection:last-form-data';
 
-const MeasurementCard = ({ title, field }: { title: string; field: string }) => {
+const MeasurementCard = ({ title, field, unit }: { title: string; field: string; unit: string }) => {
     return (
         <Row gutter={'1rem'}>
             <Col span={24}>{title}</Col>
@@ -26,7 +26,7 @@ const MeasurementCard = ({ title, field }: { title: string; field: string }) => 
                     initialValue={0}
                     rules={[{ required: true, message: '请填写必填项' }]}
                 >
-                    <InputNumber className="w-full!" controls={false} />
+                    <InputNumber className="w-full!" controls={false} suffix={unit} />
                 </Form.Item>
             </Col>
             <Col span={8}>
@@ -36,7 +36,7 @@ const MeasurementCard = ({ title, field }: { title: string; field: string }) => 
                     initialValue={0}
                     rules={[{ required: true, message: '请填写必填项' }]}
                 >
-                    <InputNumber className="w-full!" controls={false} />
+                    <InputNumber className="w-full!" controls={false} suffix={unit} />
                 </Form.Item>
             </Col>
             <Col span={8}>
@@ -46,7 +46,7 @@ const MeasurementCard = ({ title, field }: { title: string; field: string }) => 
                     initialValue={0}
                     rules={[{ required: true, message: '请填写必填项' }]}
                 >
-                    <InputNumber className="w-full!" controls={false} />
+                    <InputNumber className="w-full!" controls={false} suffix={unit} />
                 </Form.Item>
             </Col>
             <Col span={8}>
@@ -56,7 +56,7 @@ const MeasurementCard = ({ title, field }: { title: string; field: string }) => 
                     initialValue={0}
                     rules={[{ required: true, message: '请填写必填项' }]}
                 >
-                    <InputNumber className="w-full!" controls={false} />
+                    <InputNumber className="w-full!" controls={false} suffix={unit} />
                 </Form.Item>
             </Col>
             <Col span={8}>
@@ -66,7 +66,7 @@ const MeasurementCard = ({ title, field }: { title: string; field: string }) => 
                     initialValue={0}
                     rules={[{ required: true, message: '请填写必填项' }]}
                 >
-                    <InputNumber className="w-full!" controls={false} />
+                    <InputNumber className="w-full!" controls={false} suffix={unit} />
                 </Form.Item>
             </Col>
         </Row>
@@ -187,7 +187,7 @@ export const EquipmentInfoCollectionForm = () => {
                 <Row gutter={16}>
                     <Col span={24}>
                         <Form.Item
-                            label="设备类型"
+                            label="设备名称"
                             name="device_type"
                             rules={[{ required: true, message: '请选择设备类型' }]}
                         >
@@ -196,7 +196,7 @@ export const EquipmentInfoCollectionForm = () => {
                                     { label: '纸尿裤吸收性能测试仪', value: 'diaper' },
                                     { label: '卫生巾吸收性能测试仪', value: 'sanitary' },
                                 ]}
-                                placeholder="请选择设备类型"
+                                placeholder="请选择设备名称"
                             />
                         </Form.Item>
                     </Col>
@@ -270,7 +270,7 @@ export const EquipmentInfoCollectionForm = () => {
                             initialValue={0}
                             rules={[{ required: true, message: '请输入加液量' }]}
                         >
-                            <InputNumber className="w-full!" placeholder="请输入加液量" controls={false} />
+                            <InputNumber className="w-full!" placeholder="请输入加液量" controls={false} suffix="ml" />
                         </Form.Item>
                     </Col>
                     <Col span={24}>
@@ -280,7 +280,7 @@ export const EquipmentInfoCollectionForm = () => {
                             initialValue={60}
                             rules={[{ required: true, message: '请输入保压时间' }]}
                         >
-                            <InputNumber className="w-full!" placeholder="请输入保压时间" controls={false} />
+                            <InputNumber className="w-full!" placeholder="请输入保压时间" controls={false} suffix="s" />
                         </Form.Item>
                     </Col>
                     <Col span={24}>
@@ -294,15 +294,15 @@ export const EquipmentInfoCollectionForm = () => {
                         </Form.Item>
                     </Col>
 
-                    <MeasurementCard title="一次吸收时间" field="first_absorption_time_samples" />
-                    <MeasurementCard title="二次吸收时间" field="second_absorption_time_samples" />
+                    <MeasurementCard title="第一次吸收速度" field="first_absorption_time_samples" unit="s" />
+                    <MeasurementCard title="第二次吸收速度" field="second_absorption_time_samples" unit="s" />
                     {deviceType === 'diaper' && (
                         <>
-                            <MeasurementCard title="三次吸收时间" field="third_absorption_time_samples" />
-                            <MeasurementCard title="渗透量" field="permeation_samples" />
+                            <MeasurementCard title="第三次吸收速度" field="third_absorption_time_samples" unit="s" />
+                            <MeasurementCard title="渗透量" field="permeation_samples" unit="g" />
                         </>
                     )}
-                    <MeasurementCard title="回渗量" field="back_seepage_samples" />
+                    <MeasurementCard title="回渗量" field="back_seepage_samples" unit="g" />
 
                     <Col span={24} className="text-right">
                         <Button type="primary" htmlType="submit" loading={loading}>
