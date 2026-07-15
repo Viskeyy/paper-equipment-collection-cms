@@ -8,7 +8,21 @@ import {
     type FormItem,
     type SanitaryNapkinItemPayload,
 } from './constant';
-import { Button, Card, Col, DatePicker, Form, Input, InputNumber, message, Row, Select } from 'antd';
+import { useNavigate } from '@tanstack/react-router';
+import {
+    Button,
+    Card,
+    Col,
+    DatePicker,
+    Form,
+    Input,
+    InputNumber,
+    message,
+    Popconfirm,
+    Row,
+    Select,
+    Typography,
+} from 'antd';
 import dayjs from 'dayjs';
 import { useEffect, useState } from 'react';
 
@@ -16,7 +30,7 @@ const LAST_FORM_DATA_STORAGE_KEY = 'equipment-info-collection:last-form-data';
 
 const MeasurementCard = ({ title, field, unit }: { title: string; field: string; unit: string }) => {
     return (
-        <Row>
+        <>
             <Col span={24}>{title}</Col>
             <Col span={24} md={8}>
                 <Form.Item
@@ -68,13 +82,22 @@ const MeasurementCard = ({ title, field, unit }: { title: string; field: string;
                     <InputNumber className="w-full!" controls={false} suffix={unit} />
                 </Form.Item>
             </Col>
-        </Row>
+        </>
     );
 };
 
 export const EquipmentInfoCollectionForm = () => {
+    const navigate = useNavigate();
+
     const [form] = Form.useForm();
     const [loading, setLoading] = useState(false);
+
+    const handleLogout = () => {
+        localStorage.removeItem('fullname');
+        localStorage.removeItem('expire');
+
+        navigate({ to: '/login' });
+    };
 
     const submit = async (values: FormItem) => {
         setLoading(true);
@@ -183,15 +206,33 @@ export const EquipmentInfoCollectionForm = () => {
 
     return (
         <Card
-            title="设备检测信息收集"
+            title="实验室数据采集系统（SLS）"
             className="flex h-full w-full flex-col"
+            extra={
+                <Popconfirm title="确认登出?" cancelText="取消" okText="确认" onConfirm={handleLogout}>
+                    <Button type="link">退出登录</Button>
+                </Popconfirm>
+            }
             styles={{ body: { flex: 1, minHeight: 0, overflowY: 'auto' } }}
         >
-            <Form form={form} className="mx-auto! w-full md:w-1/2" onFinish={submit}>
+            <Form
+                form={form}
+                className="mx-auto! w-full md:w-1/2"
+                onFinish={submit}
+                labelCol={{ flex: '5rem' }}
+                wrapperCol={{ flex: 'auto' }}
+                labelAlign="left"
+                requiredMark={(label, { required }) => (
+                    <>
+                        {label}
+                        {required && <span style={{ color: 'var(--ant-color-error)' }}>*</span>}
+                    </>
+                )}
+            >
                 <Row gutter={16}>
                     <Col span={24}>
                         <Form.Item label="填报人">
-                            <Input value={localStorage.getItem('fullname') || ''} disabled />
+                            <Typography.Text>{localStorage.getItem('fullname') || ''}</Typography.Text>
                         </Form.Item>
                     </Col>
                     <Col span={24}>

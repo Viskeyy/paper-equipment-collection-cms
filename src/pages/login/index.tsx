@@ -2,7 +2,7 @@ import { useNavigate } from '@tanstack/react-router';
 import { Button, Form, Input, message, Typography } from 'antd';
 import { useEffect } from 'react';
 
-const EXPIRE_TIME = 3 * 24 * 60 * 60 * 1000;
+const EXPIRE_TIME = 1 * 24 * 60 * 60 * 1000;
 
 type UserInfo = {
     username: string;
