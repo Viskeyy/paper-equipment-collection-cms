@@ -1,5 +1,5 @@
 import { useNavigate } from '@tanstack/react-router';
-import { Button, Card, Form, Input, message, Typography } from 'antd';
+import { Button, Form, Input, message, Typography } from 'antd';
 import { useEffect } from 'react';
 
 const EXPIRE_TIME = 3 * 24 * 60 * 60 * 1000;
@@ -37,27 +37,47 @@ export const LoginPage = () => {
     }, []);
 
     return (
-        <div className="flex h-screen w-screen items-center justify-center">
-            <Card className="w-120" variant="outlined">
-                <Typography.Title level={3} className="text-center">
-                    造纸院设备中心实验室数据采集系统
+        <div
+            className="flex h-screen w-screen items-center justify-center bg-cover bg-center bg-no-repeat"
+            style={{ backgroundImage: 'url(/login.png)' }}
+        >
+            <div className="w-[90%] border-0 bg-transparent md:w-112.5">
+                <Typography.Title level={1} className="flex flex-col gap-4 text-center text-white!">
+                    <span className="text-4xl">「造纸院设备中心」</span>
+                    <span className="font-normal">实验室数据采集系统</span>
                 </Typography.Title>
-                <div className="mx-auto w-96">
-                    <Form onFinish={onFinish} layout="vertical">
-                        <Form.Item label="用户名" name="username" rules={[{ required: true, message: '请输入用户名' }]}>
-                            <Input placeholder="请输入用户名" />
+                <div className="mt-12">
+                    <Form onFinish={onFinish}>
+                        <Form.Item name="username" rules={[{ required: true, message: '请输入用户名' }]}>
+                            <Input
+                                placeholder="请输入用户名"
+                                prefix={<img src="/icons/user.svg" alt="user" className="h-4 w-4" />}
+                                size="large"
+                                styles={{ root: { height: 50 } }}
+                            />
                         </Form.Item>
-                        <Form.Item label="密码" name="password" rules={[{ required: true, message: '请输入密码' }]}>
-                            <Input.Password placeholder="请输入密码" />
+                        <Form.Item name="password" rules={[{ required: true, message: '请输入密码' }]}>
+                            <Input.Password
+                                placeholder="请输入密码"
+                                prefix={<img src="/icons/password.svg" alt="password" className="h-4 w-4" />}
+                                size="large"
+                                styles={{ root: { height: 50 } }}
+                            />
                         </Form.Item>
                         <Form.Item>
-                            <Button type="primary" htmlType="submit" block>
+                            <Button
+                                type="primary"
+                                htmlType="submit"
+                                size="large"
+                                styles={{ root: { height: 50 } }}
+                                block
+                            >
                                 登录
                             </Button>
                         </Form.Item>
                     </Form>
                 </div>
-            </Card>
+            </div>
         </div>
     );
 };

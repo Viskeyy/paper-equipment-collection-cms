@@ -16,10 +16,9 @@ const LAST_FORM_DATA_STORAGE_KEY = 'equipment-info-collection:last-form-data';
 
 const MeasurementCard = ({ title, field, unit }: { title: string; field: string; unit: string }) => {
     return (
-        <Row gutter={'1rem'}>
+        <Row>
             <Col span={24}>{title}</Col>
-
-            <Col span={8}>
+            <Col span={24} md={8}>
                 <Form.Item
                     label="试样一"
                     name={[field, `${field}_1`]}
@@ -29,7 +28,7 @@ const MeasurementCard = ({ title, field, unit }: { title: string; field: string;
                     <InputNumber className="w-full!" controls={false} suffix={unit} />
                 </Form.Item>
             </Col>
-            <Col span={8}>
+            <Col span={24} md={8}>
                 <Form.Item
                     label="试样二"
                     name={[field, `${field}_2`]}
@@ -39,7 +38,7 @@ const MeasurementCard = ({ title, field, unit }: { title: string; field: string;
                     <InputNumber className="w-full!" controls={false} suffix={unit} />
                 </Form.Item>
             </Col>
-            <Col span={8}>
+            <Col span={24} md={8}>
                 <Form.Item
                     label="试样三"
                     name={[field, `${field}_3`]}
@@ -49,7 +48,7 @@ const MeasurementCard = ({ title, field, unit }: { title: string; field: string;
                     <InputNumber className="w-full!" controls={false} suffix={unit} />
                 </Form.Item>
             </Col>
-            <Col span={8}>
+            <Col span={24} md={8}>
                 <Form.Item
                     label="试样四"
                     name={[field, `${field}_4`]}
@@ -59,7 +58,7 @@ const MeasurementCard = ({ title, field, unit }: { title: string; field: string;
                     <InputNumber className="w-full!" controls={false} suffix={unit} />
                 </Form.Item>
             </Col>
-            <Col span={8}>
+            <Col span={24} md={8}>
                 <Form.Item
                     label="试样五"
                     name={[field, `${field}_5`]}
@@ -171,6 +170,11 @@ export const EquipmentInfoCollectionForm = () => {
     }, [form]);
 
     useEffect(() => {
+        form.resetFields(['device_model', 'sample_model', 'amount_of_liquid']);
+        if (deviceType === 'sanitary') form.setFieldValue('amount_of_liquid', 5);
+    }, [deviceType]);
+
+    useEffect(() => {
         if (!sampleModel) return;
         const defaultAmount = DIAPER_SAMPLE_MODEL_LIQUID_AMOUNT_MAP[sampleModel];
         if (defaultAmount === undefined) return;
@@ -183,8 +187,13 @@ export const EquipmentInfoCollectionForm = () => {
             className="flex h-full w-full flex-col"
             styles={{ body: { flex: 1, minHeight: 0, overflowY: 'auto' } }}
         >
-            <Form form={form} className="mx-auto! w-1/2" onFinish={submit}>
+            <Form form={form} className="mx-auto! w-full md:w-1/2" onFinish={submit}>
                 <Row gutter={16}>
+                    <Col span={24}>
+                        <Form.Item label="填报人">
+                            <Input value={localStorage.getItem('fullname') || ''} disabled />
+                        </Form.Item>
+                    </Col>
                     <Col span={24}>
                         <Form.Item
                             label="设备名称"
@@ -285,10 +294,10 @@ export const EquipmentInfoCollectionForm = () => {
                     </Col>
                     <Col span={24}>
                         <Form.Item
-                            label="打印时间"
+                            label="上传时间"
                             name="sampling_at"
                             initialValue={dayjs()}
-                            rules={[{ required: true, message: '请选择打印时间' }]}
+                            rules={[{ required: true, message: '请选择上传时间' }]}
                         >
                             <DatePicker showTime className="w-full" />
                         </Form.Item>
