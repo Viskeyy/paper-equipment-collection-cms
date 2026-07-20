@@ -243,8 +243,8 @@ export const EquipmentInfoCollectionForm = () => {
                         >
                             <Select
                                 options={[
-                                    { label: '纸尿裤吸收速度测试仪', value: 'diaper' },
-                                    { label: '卫生巾吸收速度测试仪', value: 'sanitary' },
+                                    { label: '纸尿裤吸收性能测试仪', value: 'diaper' },
+                                    { label: '吸收速度测试仪', value: 'sanitary' },
                                 ]}
                                 placeholder="请选择设备名称"
                             />
