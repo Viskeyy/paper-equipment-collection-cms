@@ -14,6 +14,7 @@ import {
     Card,
     Col,
     DatePicker,
+    Divider,
     Form,
     Input,
     InputNumber,
@@ -28,10 +29,22 @@ import { useEffect, useState } from 'react';
 
 const LAST_FORM_DATA_STORAGE_KEY = 'equipment-info-collection:last-form-data';
 
-const MeasurementCard = ({ title, field, unit }: { title: string; field: string; unit: string }) => {
+const MeasurementCard = ({
+    title,
+    field,
+    unit,
+    isLast = false,
+}: {
+    title: string;
+    field: string;
+    unit: string;
+    isLast?: boolean;
+}) => {
     return (
         <>
-            <Col span={24}>{title}</Col>
+            <Col span={24}>
+                <Form.Item label={title} labelAlign="left" />
+            </Col>
             <Col span={24} md={8}>
                 <Form.Item
                     label="试样一"
@@ -82,6 +95,11 @@ const MeasurementCard = ({ title, field, unit }: { title: string; field: string;
                     <InputNumber className="w-full!" controls={false} suffix={unit} />
                 </Form.Item>
             </Col>
+            {!isLast && (
+                <Col span={24}>
+                    <Divider variant="dashed" />
+                </Col>
+            )}
         </>
     );
 };
@@ -207,21 +225,29 @@ export const EquipmentInfoCollectionForm = () => {
     return (
         <Card
             title="实验室数据采集系统（SLS）"
-            className="flex h-full w-full flex-col"
             extra={
                 <Popconfirm title="确认登出?" cancelText="取消" okText="确认" onConfirm={handleLogout}>
                     <Button type="link">退出登录</Button>
                 </Popconfirm>
             }
-            styles={{ body: { flex: 1, minHeight: 0, overflowY: 'auto' } }}
+            styles={{
+                header: {
+                    position: 'sticky',
+                    top: 0,
+                    backgroundColor: '#fff',
+                    zIndex: 10,
+                    borderBottom: '1px solid #edf0f5',
+                },
+                body: { backgroundColor: '#f5f7fb' },
+            }}
         >
             <Form
                 form={form}
-                className="mx-auto! w-full md:w-1/2"
+                className="mx-auto! flex w-full flex-col gap-4 md:w-1/2"
                 onFinish={submit}
-                labelCol={{ flex: '5rem' }}
+                labelCol={{ flex: '6rem' }}
                 wrapperCol={{ flex: 'auto' }}
-                labelAlign="left"
+                labelAlign="right"
                 requiredMark={(label, { required }) => (
                     <>
                         {label}
@@ -229,140 +255,165 @@ export const EquipmentInfoCollectionForm = () => {
                     </>
                 )}
             >
-                <Row gutter={16}>
-                    <Col span={24}>
-                        <Form.Item label="填报人">
-                            <Typography.Text>{localStorage.getItem('fullname') || ''}</Typography.Text>
-                        </Form.Item>
-                    </Col>
-                    <Col span={24}>
-                        <Form.Item
-                            label="设备名称"
-                            name="device_type"
-                            rules={[{ required: true, message: '请选择设备类型' }]}
-                        >
-                            <Select
-                                options={[
-                                    { label: '纸尿裤吸收性能测试仪', value: 'diaper' },
-                                    { label: '吸收速度测试仪', value: 'sanitary' },
-                                ]}
-                                placeholder="请选择设备名称"
-                            />
-                        </Form.Item>
-                    </Col>
-                    <Col span={24}>
-                        <Form.Item
-                            label="设备型号"
-                            name="device_model"
-                            rules={[{ required: true, message: '请选择设备型号' }]}
-                        >
-                            <Select
-                                options={
-                                    deviceType === 'diaper'
-                                        ? DIAPER_DEVICE_MODEL_OPTIONS
-                                        : SANITARY_NAPKIN_DEVICE_MODEL_OPTIONS
-                                }
-                                placeholder="请选择设备型号"
-                            />
-                        </Form.Item>
-                    </Col>
-                    <Col span={24}>
-                        <Form.Item
-                            label="设备 ID"
-                            name="device_id"
-                            rules={[{ required: true, message: '请输入设备 ID' }]}
-                        >
-                            <Input placeholder="请输入设备 ID" />
-                        </Form.Item>
-                    </Col>
-                    <Col span={24}>
-                        <Form.Item
-                            label="样品编号"
-                            name="sample_number"
-                            rules={[{ required: true, message: '请输入样品编号' }]}
-                        >
-                            <Input placeholder="请输入样品编号" />
-                        </Form.Item>
-                    </Col>
-                    <Col span={24}>
-                        <Form.Item
-                            label="样品型号"
-                            name="sample_model"
-                            rules={[{ required: true, message: '请输入样品型号' }]}
-                        >
-                            {deviceType === 'diaper' ? (
-                                <Select placeholder="请选择样品型号" options={DIAPER_SAMPLE_MODEL_OPTIONS} />
-                            ) : (
-                                <Select placeholder="请选择样品型号" options={SANITARY_SAMPLE_MODEL_OPTIONS} />
-                            )}
-                        </Form.Item>
-                    </Col>
-                    <Col span={24}>
-                        <Form.Item
-                            label="加液次数"
-                            name="times_of_add_liquid"
-                            initialValue={2}
-                            rules={[{ required: true, message: '请输入加液次数' }]}
-                        >
-                            <InputNumber
-                                className="w-full!"
-                                min={0}
-                                precision={0}
-                                placeholder="请输入加液次数"
-                                controls={false}
-                            />
-                        </Form.Item>
-                    </Col>
-                    <Col span={24}>
-                        <Form.Item
-                            label="加液量"
-                            name="amount_of_liquid"
-                            initialValue={0}
-                            rules={[{ required: true, message: '请输入加液量' }]}
-                        >
-                            <InputNumber className="w-full!" placeholder="请输入加液量" controls={false} suffix="ml" />
-                        </Form.Item>
-                    </Col>
-                    <Col span={24}>
-                        <Form.Item
-                            label="保压时间"
-                            name="holding_time"
-                            initialValue={60}
-                            rules={[{ required: true, message: '请输入保压时间' }]}
-                        >
-                            <InputNumber className="w-full!" placeholder="请输入保压时间" controls={false} suffix="s" />
-                        </Form.Item>
-                    </Col>
-                    <Col span={24}>
-                        <Form.Item
-                            label="上传时间"
-                            name="sampling_at"
-                            initialValue={dayjs()}
-                            rules={[{ required: true, message: '请选择上传时间' }]}
-                        >
-                            <DatePicker showTime className="w-full" />
-                        </Form.Item>
-                    </Col>
+                <Card title="设备信息" styles={{ header: { backgroundColor: '#f7faff' } }}>
+                    <Row>
+                        <Col span={24}>
+                            <Form.Item label="填报人">
+                                <Typography.Text>{localStorage.getItem('fullname') || ''}</Typography.Text>
+                            </Form.Item>
+                        </Col>
+                        <Col span={24}>
+                            <Form.Item
+                                label="设备名称"
+                                name="device_type"
+                                rules={[{ required: true, message: '请选择设备类型' }]}
+                            >
+                                <Select
+                                    options={[
+                                        { label: '纸尿裤吸收性能测试仪', value: 'diaper' },
+                                        { label: '吸收速度测试仪', value: 'sanitary' },
+                                    ]}
+                                    placeholder="请选择设备名称"
+                                />
+                            </Form.Item>
+                        </Col>
+                        <Col span={24}>
+                            <Form.Item
+                                label="设备型号"
+                                name="device_model"
+                                rules={[{ required: true, message: '请选择设备型号' }]}
+                            >
+                                <Select
+                                    options={
+                                        deviceType === 'diaper'
+                                            ? DIAPER_DEVICE_MODEL_OPTIONS
+                                            : SANITARY_NAPKIN_DEVICE_MODEL_OPTIONS
+                                    }
+                                    placeholder="请选择设备型号"
+                                />
+                            </Form.Item>
+                        </Col>
+                        <Col span={24}>
+                            <Form.Item
+                                label="设备 ID"
+                                name="device_id"
+                                rules={[{ required: true, message: '请输入设备 ID' }]}
+                            >
+                                <Input placeholder="请输入设备 ID" />
+                            </Form.Item>
+                        </Col>
+                    </Row>
+                </Card>
 
-                    <MeasurementCard title="第一次吸收速度" field="first_absorption_time_samples" unit="s" />
-                    <MeasurementCard title="第二次吸收速度" field="second_absorption_time_samples" unit="s" />
-                    {deviceType === 'diaper' && (
-                        <>
-                            <MeasurementCard title="第三次吸收速度" field="third_absorption_time_samples" unit="s" />
-                            <MeasurementCard title="渗透量" field="permeation_samples" unit="g" />
-                        </>
-                    )}
-                    <MeasurementCard title="回渗量" field="back_seepage_samples" unit="g" />
+                <Card title="样品信息与实验参数" styles={{ header: { backgroundColor: '#f7faff' } }}>
+                    <Row>
+                        <Col span={24}>
+                            <Form.Item
+                                label="样品编号"
+                                name="sample_number"
+                                rules={[{ required: true, message: '请输入样品编号' }]}
+                            >
+                                <Input placeholder="请输入样品编号" />
+                            </Form.Item>
+                        </Col>
+                        <Col span={24}>
+                            <Form.Item
+                                label="样品型号"
+                                name="sample_model"
+                                rules={[{ required: true, message: '请输入样品型号' }]}
+                            >
+                                {deviceType === 'diaper' ? (
+                                    <Select placeholder="请选择样品型号" options={DIAPER_SAMPLE_MODEL_OPTIONS} />
+                                ) : (
+                                    <Select placeholder="请选择样品型号" options={SANITARY_SAMPLE_MODEL_OPTIONS} />
+                                )}
+                            </Form.Item>
+                        </Col>
+                        <Col span={24}>
+                            <Form.Item
+                                label="加液次数"
+                                name="times_of_add_liquid"
+                                initialValue={2}
+                                rules={[{ required: true, message: '请输入加液次数' }]}
+                            >
+                                <InputNumber
+                                    className="w-full!"
+                                    min={0}
+                                    precision={0}
+                                    placeholder="请输入加液次数"
+                                    controls={false}
+                                />
+                            </Form.Item>
+                        </Col>
+                        <Col span={24}>
+                            <Form.Item
+                                label="加液量"
+                                name="amount_of_liquid"
+                                initialValue={0}
+                                rules={[{ required: true, message: '请输入加液量' }]}
+                            >
+                                <InputNumber
+                                    className="w-full!"
+                                    placeholder="请输入加液量"
+                                    controls={false}
+                                    suffix="ml"
+                                />
+                            </Form.Item>
+                        </Col>
+                        <Col span={24}>
+                            <Form.Item
+                                label="保压时间"
+                                name="holding_time"
+                                initialValue={60}
+                                rules={[{ required: true, message: '请输入保压时间' }]}
+                            >
+                                <InputNumber
+                                    className="w-full!"
+                                    placeholder="请输入保压时间"
+                                    controls={false}
+                                    suffix="s"
+                                />
+                            </Form.Item>
+                        </Col>
+                        <Col span={24}>
+                            <Form.Item
+                                label="上传时间"
+                                name="sampling_at"
+                                initialValue={dayjs()}
+                                rules={[{ required: true, message: '请选择上传时间' }]}
+                            >
+                                <DatePicker showTime className="w-full" />
+                            </Form.Item>
+                        </Col>
+                    </Row>
+                </Card>
 
-                    <Col span={24} className="text-right">
-                        <Button type="primary" htmlType="submit" loading={loading}>
-                            保存
-                        </Button>
-                        <Button className="ml-4" onClick={() => globalThis.location.reload()} loading={loading}>
-                            取消
-                        </Button>
-                    </Col>
-                </Row>
+                <Card title="检测结果" styles={{ header: { backgroundColor: '#f7faff' } }}>
+                    <Row>
+                        <MeasurementCard title="第一次吸收速度" field="first_absorption_time_samples" unit="s" />
+                        <MeasurementCard title="第二次吸收速度" field="second_absorption_time_samples" unit="s" />
+                        {deviceType === 'diaper' && (
+                            <>
+                                <MeasurementCard
+                                    title="第三次吸收速度"
+                                    field="third_absorption_time_samples"
+                                    unit="s"
+                                />
+                                <MeasurementCard title="渗漏量" field="permeation_samples" unit="g" />
+                            </>
+                        )}
+                        <MeasurementCard title="回渗量" field="back_seepage_samples" unit="g" isLast />
+                    </Row>
+                </Card>
+
+                <Col span={24} className="text-right">
+                    <Button type="primary" htmlType="submit" loading={loading}>
+                        保存
+                    </Button>
+                    <Button className="ml-4" onClick={() => globalThis.location.reload()} loading={loading}>
+                        取消
+                    </Button>
+                </Col>
             </Form>
         </Card>
     );
